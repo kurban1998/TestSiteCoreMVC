@@ -10,36 +10,23 @@ using DataAccessLayer.Models;
 
 namespace DataAccessLayer.Repository
 {
-    public class UnitOfWork : IDisposable
+    public class UnitOfWork: IUnitOfWork
     {
-        private MyDbContext db = new MyDbContext();
-        private GenericRepository<Pen> penRepository;
+        private MyDbContext _databaseContext = new MyDbContext();
+        private GenericRepository<Pen> _penRepository;
         public GenericRepository<Pen> Pens
         {
             get
             {
-                if (penRepository == null)
-                    penRepository = new GenericRepository<Pen>(db);
-                return penRepository;
+                if (_penRepository == null)
+                    _penRepository = new GenericRepository<Pen>(_databaseContext);
+                return _penRepository;
             }
         }
-       
-        private bool disposed = false;
-        public void Dispose(bool disposing)
+
+        public void Save()
         {
-            if (!this.disposed)
-            {
-                if (disposing)
-                {
-                    db.Dispose();
-                }
-                this.disposed = true;
-            }
-        }
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            _databaseContext.SaveChanges();
         }
     }
 }

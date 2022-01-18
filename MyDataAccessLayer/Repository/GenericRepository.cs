@@ -23,7 +23,6 @@ namespace DataAccessLayer.Repository
         public void Add(T item)
         {
             _MyDbSet.Add(item);
-            _databaseContext.SaveChanges();
         }
 
         public void Delete(T item)
