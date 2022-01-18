@@ -7,10 +7,8 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.Interfaces
 {
-    public interface IGenericRepository<T> where T: class
+    public interface IUnitOfWork 
     {
-        IEnumerable<T> GetAll();
-        void Add(T item);
-        void Delete(T item);
+        void Save();
     }
 }
