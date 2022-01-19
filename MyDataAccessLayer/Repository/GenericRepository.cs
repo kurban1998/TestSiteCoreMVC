@@ -13,27 +13,26 @@ namespace DataAccessLayer.Repository
     public class GenericRepository<T> : IGenericRepository<T> where T:class
     {
         private MyDbContext _databaseContext;
-        private DbSet<T> _MyDbSet;
+        private DbSet<T> _dbSet;
         public GenericRepository(MyDbContext context)
         {
             _databaseContext = context;
-            _MyDbSet = context.Set<T>();
+            _dbSet = context.Set<T>();
         }
 
         public void Add(T item)
         {
-            _MyDbSet.Add(item);
+            _dbSet.Add(item);
         }
 
         public void Delete(T item)
         {
-            _MyDbSet.Remove(item);
-            _databaseContext.SaveChanges();
+            _dbSet.Remove(item);
         }
 
         IEnumerable<T> IGenericRepository<T>.GetAll()
         {
-            return _MyDbSet.ToList<T>();
+            return _dbSet.ToList<T>();
         }
     }
 }
