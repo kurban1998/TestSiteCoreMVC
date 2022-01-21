@@ -6,3 +6,13 @@
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
+<form method="post" action="~/Home/AddToDataBase">
+    <label>Бренд ручки</label><br />
+    <input type="text" name="brand" /><br />
+    <label>Цвет ручки</label><br />
+    <input type="text" name="color" /><br />
+    <label>Цена ручки</label><br />
+    <input type="number" min="5" max="1000" name="price" /><br />
+    <br />
+    <input type="submit" value="Добавить ручку в базу" />
+</form>
