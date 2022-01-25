@@ -18,7 +18,7 @@ namespace MyWebAppProject.Controllers
 
         
         MyDbContext _db;
-        
+        GenericRepository<Pen> _gr;
         public HomeController(MyDbContext context)
         {
             _db = context;
@@ -31,12 +31,14 @@ namespace MyWebAppProject.Controllers
         [HttpGet]
         public string AddToDataBase(string brand, string color, double price)
         {
+            _gr = new GenericRepository<Pen>(_db);
             Pen pen = new Pen() { 
                 Brand = brand,
                 Color=color,
                 Price=price
             };
-            _db.Pens.Add(pen);
+            _gr.Add(pen);
+            //_db.Pens.Add(pen);
             _db.SaveChanges();
             return "Успешно добавлена";
         }
