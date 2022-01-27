@@ -1,8 +1,43 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model IEnumerable<DataAccessLayer.Models.Pen>
+@{
+    //ViewData["Title"] = "Список ручек";
+    Layout = null;
 }
+<!DOCTYPE html>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<html>
+<head>
+    <title>Магазин Ручек</title>
+</head>
+<body>
+    <h3>Ручки</h3>
+    <table>
+        <tr>
+            <td>Бренд</td>
+            <td>Цвет</td>
+            <td>Цена</td>
+            <td></td>
+        </tr>
+        @foreach (var pen in Model)
+        {
+            <tr>
+                <td>@pen.Brand</td>
+                <td>@pen.Color</td>
+                <td>@pen.Price</td>
+            </tr>
+        }
+    </table>
+</body>
+</html>
+
+
+<form method="get" action="~/Home/AddToDataBase">
+    <label>Бренд</label><br />
+    <input type="text" name="brand" /><br />
+    <label>Цвет</label><br />
+    <input type="text" name="color" /><br />
+    <label>Цена</label><br />
+    <input type="number" min="5" max="1000" name="price" /><br />
+    <br />
+    <input type="submit" value="добавить в базу" />
+</form>

@@ -1,0 +1,5 @@
+#myignorefiles
+[Bb]in/
+[Oo]bj/
+packages/
+.vs/

@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DataAccessLayer.DataBase;
+using DataAccessLayer.Models;
+using DataAccessLayer.Repository;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using MyWebAppProject.Models;
 using System;
@@ -13,16 +16,33 @@ namespace MyWebAppProject.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        
+        MyDbContext _db;
+        GenericRepository<Pen> _gr;
+        public HomeController(MyDbContext context)
         {
-            _logger = logger;
+            _db = context;
         }
-
         public IActionResult Index()
         {
-            return View();
+            return View(_db.Pens.ToList());
         }
-
+        
+        [HttpGet]
+        public string AddToDataBase(string brand, string color, double price)
+        {
+            _gr = new GenericRepository<Pen>(_db);
+            Pen pen = new Pen() { 
+                Brand = brand,
+                Color=color,
+                Price=price
+            };
+            _gr.Add(pen);
+            //_db.Pens.Add(pen);
+            _db.SaveChanges();
+            return "Успешно добавлена";
+        }
+        
         public IActionResult Privacy()
         {
             return View();
