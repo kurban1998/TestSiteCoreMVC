@@ -1,22 +1,19 @@
 ﻿using DataAccessLayer.DataBase;
 using DataAccessLayer.Interfaces;
-using DataAccessLayer.Models;
+
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
+
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
+
 
 namespace DataAccessLayer.Repository
 {
-    public class GenericRepository<T> : IGenericRepository<T> where T:class
+    public class GenericRepository<T> : IGenericRepository<T>
+        where T : class
     {
-        private MyDbContext _databaseContext;
-        private DbSet<T> _dbSet;
         public GenericRepository(MyDbContext context)
         {
-            _databaseContext = context;
             _dbSet = context.Set<T>();
         }
 
@@ -30,9 +27,11 @@ namespace DataAccessLayer.Repository
             _dbSet.Remove(item);
         }
 
-        IEnumerable<T> IGenericRepository<T>.GetAll()
+        public IQueryable<T> GetAll()
         {
-            return _dbSet.ToList<T>();
+            return _dbSet;
         }
+
+        private DbSet<T> _dbSet;
     }
 }

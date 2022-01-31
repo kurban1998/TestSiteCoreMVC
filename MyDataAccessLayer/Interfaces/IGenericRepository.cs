@@ -1,15 +1,13 @@
-﻿using DataAccessLayer.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
+
+
 
 namespace DataAccessLayer.Interfaces
 {
-    public interface IGenericRepository<T> where T: class
+    public interface IGenericRepository<T>
+        where T : class
     {
-        IEnumerable<T> GetAll();
+        IQueryable<T> GetAll();
         void Add(T item);
         void Delete(T item);
     }

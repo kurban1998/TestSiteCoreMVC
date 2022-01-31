@@ -1,45 +1,43 @@
-﻿using DataAccessLayer.DataBase;
+﻿using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
-using DataAccessLayer.Repository;
+
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+
 using MyWebAppProject.Models;
-using System;
-using System.Collections.Generic;
+
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
+
+
 
 namespace MyWebAppProject.Controllers
 {
     public class HomeController : Controller
-    {
-        private readonly ILogger<HomeController> _logger;
-
-        
-        MyDbContext _db;
-        GenericRepository<Pen> _gr;
-        public HomeController(MyDbContext context)
+    {        
+        public HomeController(IUnitOfWork unitOfWork)
         {
-            _db = context;
+            _unitOfWork = unitOfWork;
         }
+
         public IActionResult Index()
         {
-            return View(_db.Pens.ToList());
+            var pens = _unitOfWork.PenRepository.GetAll();
+            return View(pens.ToList());
         }
         
         [HttpGet]
         public string AddToDataBase(string brand, string color, double price)
         {
-            _gr = new GenericRepository<Pen>(_db);
-            Pen pen = new Pen() { 
+            var pen = new Pen()
+            { 
                 Brand = brand,
                 Color=color,
                 Price=price
             };
-            _gr.Add(pen);
-            //_db.Pens.Add(pen);
-            _db.SaveChanges();
+
+            _unitOfWork.PenRepository.Add(pen);
+            _unitOfWork.Save();
+
             return "Успешно добавлена";
         }
         
@@ -53,5 +51,7 @@ namespace MyWebAppProject.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        private readonly IUnitOfWork _unitOfWork;
     }
 }
