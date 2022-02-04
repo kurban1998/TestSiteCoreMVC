@@ -1,5 +1,7 @@
 using DataAccessLayer.DataBase;
-
+using DataAccessLayer.Interfaces;
+using DataAccessLayer.Models;
+using DataAccessLayer.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +24,8 @@ namespace MyWebAppProject
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddTransient<IGenericRepository<Pen>,GenericRepository<Pen>>();
+            services.AddTransient<IUnitOfWork,UnitOfWork>();
             string connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<MyDbContext>(options => options.UseSqlServer(connection));
             services.AddControllersWithViews();
