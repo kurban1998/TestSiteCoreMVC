@@ -1,5 +1,7 @@
 using DataAccessLayer.DataBase;
-
+using DataAccessLayer.Interfaces;
+using DataAccessLayer.Models;
+using DataAccessLayer.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +26,8 @@ namespace MyWebAppProject
         {
             string connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<MyDbContext>(options => options.UseSqlServer(connection));
+            services.AddTransient<IGenericRepository<Pen>,GenericRepository<Pen>>();
+            services.AddTransient<IUnitOfWork,UnitOfWork>();
             services.AddControllersWithViews();
         }
 
