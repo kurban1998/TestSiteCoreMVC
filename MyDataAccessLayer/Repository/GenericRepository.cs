@@ -1,8 +1,6 @@
 ﻿using DataAccessLayer.DataBase;
 using DataAccessLayer.Interfaces;
-
 using Microsoft.EntityFrameworkCore;
-
 using System.Linq;
 
 
