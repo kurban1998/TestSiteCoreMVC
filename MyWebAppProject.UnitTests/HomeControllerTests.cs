@@ -27,9 +27,9 @@ namespace MyWebAppProject.UnitTests
         public void HomeController_AddToDataBase_SaveSuccess()
         {
             // Arrange
-            string brand = _fixture.Create<string>();
-            string color = _fixture.Create<string>();
-            double price = _fixture.Create<double>();
+            var brand = _fixture.Create<string>();
+            var color = _fixture.Create<string>();
+            var price = _fixture.Create<double>();
            _unitOfWork.SetupGet(x=>x.PenRepository).Returns(_penRepository.Object);
            _unitOfWork.Setup(x => x.PenRepository.Add(It.IsAny<Pen>()));
            _unitOfWork.Setup(x => x.Save());
@@ -44,9 +44,9 @@ namespace MyWebAppProject.UnitTests
         public void HomeController_Index_Success()
         { 
             // Arrange
-            string brand = _fixture.Create<string>();
-            string color = _fixture.Create<string>();
-            double price = _fixture.Create<double>();
+            var brand = _fixture.Create<string>();
+            var color = _fixture.Create<string>();
+            var price = _fixture.Create<double>();
             List<Pen> pens = _fixture.Create<List<Pen>>();
             _unitOfWork.SetupGet(x => x.PenRepository).Returns(_penRepository.Object);
             _unitOfWork.Setup(x => x.PenRepository.GetAll()).Returns(pens.AsQueryable);
