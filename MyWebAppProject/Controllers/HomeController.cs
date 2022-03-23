@@ -15,14 +15,14 @@ namespace MyWebAppProject.Controllers
     public class HomeController : Controller
     {        
         public HomeController(IUnitOfWork unitOfWork)
-        {
+        {  
             _unitOfWork = unitOfWork;
         }
 
         public IActionResult Index()
         {
             var pens = _unitOfWork.PenRepository.GetAll();
-            return View(pens.ToList());
+            return View(pens);
         }
         
         [HttpGet]
