@@ -11,8 +11,9 @@
 </head>
 <body>
     <h3>Ручки</h3>
-    <table>
+    <table border="1" bordercolor="black">
         <tr>
+            <td>id</td>
             <td>Бренд</td>
             <td>Цвет</td>
             <td>Цена</td>
@@ -20,11 +21,12 @@
         </tr>
         @foreach (var pen in Model)
         {
-            <tr>
-                <td>@pen.Brand</td>
-                <td>@pen.Color</td>
-                <td>@pen.Price</td>
-            </tr>
+    <tr>
+        <td>@pen.PenId</td>
+        <td>@pen.Brand</td>
+        <td>@pen.Color</td>
+        <td>@pen.Price</td>
+    </tr>
         }
     </table>
 </body>
@@ -40,4 +42,10 @@
     <input type="number" min="5" max="1000" name="price" /><br />
     <br />
     <input type="submit" value="добавить в базу" />
+</form>
+<br />
+<form method="get" action="~/Home/DeleteFromDataBase">
+   <h3>id ручки</h3> <input type="number" min="@Model.First().PenId" max="@Model.Last().PenId" name="id" /><br />
+    <br />
+    <input type="submit" value="Удалить ручку из базы" />
 </form>

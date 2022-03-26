@@ -1,12 +1,9 @@
 ﻿using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
-
 using Microsoft.AspNetCore.Mvc;
-
+using MyDataAccessLayer.Models;
 using MyWebAppProject.Models;
-
 using System.Diagnostics;
-using System.Linq;
 
 
 
@@ -28,19 +25,37 @@ namespace MyWebAppProject.Controllers
         [HttpGet]
         public string AddToDataBase(string brand, string color, double price)
         {
+            var penBrand = new PenBrand()
+            {
+                BrandName = brand
+            };
             var pen = new Pen()
             { 
                 Brand = brand,
                 Color=color,
-                Price=price
+                Price=price,
+                PenBrand = penBrand
             };
-
+            
             _unitOfWork.PenRepository.Add(pen);
             _unitOfWork.Save();
 
             return "Успешно добавлена";
         }
-        
+        public string DeleteFromDataBase(int id)
+        {
+            var pens = _unitOfWork.PenRepository.GetAll();
+            foreach (var pen in pens)
+            {
+                if (pen.PenId == id)
+                {
+                    _unitOfWork.PenRepository.Delete(pen);
+                }
+            }
+            _unitOfWork.Save();
+            return "Ручка удалена из базы";
+        }
+
         public IActionResult Privacy()
         {
             return View();

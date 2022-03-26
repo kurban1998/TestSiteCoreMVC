@@ -24,7 +24,7 @@ namespace MyWebAppProject.UnitTests
             _penRepository = new Mock<IGenericRepository<Pen>>(MockBehavior.Strict);
         }
         [TestMethod]
-        public void HomeController_AddToDataBase_SaveSuccess()
+        public void HomeController_AddToDataBase_Success()
         {
             // Arrange
             var brand = _fixture.Create<string>();
@@ -47,7 +47,10 @@ namespace MyWebAppProject.UnitTests
             var brand = _fixture.Create<string>();
             var color = _fixture.Create<string>();
             var price = _fixture.Create<double>();
-            List<Pen> pens = _fixture.Create<List<Pen>>();
+            _fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()
+            .ForEach(b => _fixture.Behaviors.Remove(b));
+            _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+            var pens = _fixture.Create<List<Pen>>();
             _unitOfWork.SetupGet(x => x.PenRepository).Returns(_penRepository.Object);
             _unitOfWork.Setup(x => x.PenRepository.GetAll()).Returns(pens.AsQueryable);
             _unitOfWork.Setup(x => x.Save());
@@ -59,6 +62,26 @@ namespace MyWebAppProject.UnitTests
             _unitOfWork.VerifyGet(x => x.PenRepository, Times.AtLeastOnce);
             _unitOfWork.Verify(x => x.PenRepository.GetAll(), Times.Once);
             _unitOfWork.Verify(x => x.PenRepository.Add(It.IsAny<Pen>()), Times.Once);
+            _unitOfWork.Verify(x => x.Save(), Times.Once);
+        }
+        [TestMethod]
+        public void HomeController_DeleteFromDataBase_Succsess()
+        {
+            // Arrange
+            _fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()
+            .ForEach(b => _fixture.Behaviors.Remove(b));
+            _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+            var id = _fixture.Create<int>();
+            var pen = _fixture.Create<Pen>();
+            var pens = _fixture.Create<List<Pen>>();
+            _unitOfWork.SetupGet(x => x.PenRepository).Returns(_penRepository.Object);
+            _unitOfWork.Setup(x => x.PenRepository.GetAll()).Returns(pens.AsQueryable);
+            _unitOfWork.Setup(x => x.Save());
+            //Act
+            _target.DeleteFromDataBase(id);
+            //Assert
+            _unitOfWork.VerifyGet(x => x.PenRepository, Times.Once);
+            _unitOfWork.Verify(x => x.PenRepository.GetAll(), Times.Once);
             _unitOfWork.Verify(x => x.Save(), Times.Once);
         }
     }
