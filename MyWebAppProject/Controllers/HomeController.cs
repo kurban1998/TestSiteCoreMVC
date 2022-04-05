@@ -18,23 +18,28 @@ namespace MyWebAppProject.Controllers
 
         public IActionResult Index()
         {
-            var pens = _unitOfWork.PenRepository.GetAll();
-            return View(pens);
+            var gModel = new GeneralModel()
+            {
+                Pens = _unitOfWork.PenRepository.GetAll(),
+                Brands = _unitOfWork.BrandRepository.GetAll(),
+            };
+             
+            return View(gModel);
         }
         
         [HttpGet]
         public string AddToDataBase(string brand, string color, double price)
         {
-            var penBrand = new PenBrand()
+
+            var penBrand = new Brand()
             {
-                BrandName = brand
+                Name = brand,
             };
-            var pen = new Pen()
-            { 
-                Brand = brand,
-                Color=color,
-                Price=price,
-                PenBrand = penBrand
+            _unitOfWork.BrandRepository.Add(penBrand);
+           var pen = new Pen (){
+                Color = color,
+                Price = price,
+                Brand = penBrand,
             };
             
             _unitOfWork.PenRepository.Add(pen);
@@ -44,14 +49,12 @@ namespace MyWebAppProject.Controllers
         }
         public string DeleteFromDataBase(int id)
         {
-            var pens = _unitOfWork.PenRepository.GetAll();
-            foreach (var pen in pens)
-            {
-                if (pen.PenId == id)
-                {
-                    _unitOfWork.PenRepository.Delete(pen);
-                }
-            }
+            var pen = _unitOfWork.PenRepository.GetById(id);
+            var brandId = pen.BrandId;
+            var brand = _unitOfWork.BrandRepository.GetById(brandId);
+            
+            _unitOfWork.PenRepository.Delete(pen);
+            _unitOfWork.BrandRepository.Delete(brand);
             _unitOfWork.Save();
             return "Ручка удалена из базы";
         }

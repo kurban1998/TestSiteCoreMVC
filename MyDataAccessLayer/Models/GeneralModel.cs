@@ -7,11 +7,9 @@ using System.Threading.Tasks;
 
 namespace MyDataAccessLayer.Models
 {
-    public class PenBrand
+    public class GeneralModel
     {
-        public int id { get; set; }
-        public string BrandName { get; set; }
-        public int PenId { get; set; }
-        public Pen Pen { get; set; }
+        public IEnumerable<Pen> Pens { get; set; }
+        public IEnumerable<Brand> Brands { get; set; }
     }
 }
