@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MyDataAccessLayer.Builder;
+using MyDataAccessLayer.Interfaces;
 using MyDataAccessLayer.Models;
 
 namespace MyWebAppProject
@@ -27,6 +29,7 @@ namespace MyWebAppProject
             services.AddDbContext<MyDbContext>(options => options.UseSqlServer(connection));
             services.AddTransient<IGenericRepository<Pen>,GenericRepository<Pen>>();
             services.AddTransient<IGenericRepository<Brand>, GenericRepository<Brand>>();
+            services.AddTransient<IPenBuilder,PenBuilder>();
             services.AddTransient<IUnitOfWork,UnitOfWork>();
             services.AddControllersWithViews();
         }

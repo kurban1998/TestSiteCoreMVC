@@ -1,16 +1,16 @@
 ﻿using DataAccessLayer.Interfaces;
-using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Mvc;
 using MyDataAccessLayer.Models;
 using MyWebAppProject.Models;
 using System.Diagnostics;
-
+using MyDataAccessLayer.Builder;
 
 
 namespace MyWebAppProject.Controllers
 {
     public class HomeController : Controller
-    {        
+    {
+        public PenBuilder _penBuilder = new PenBuilder();
         public HomeController(IUnitOfWork unitOfWork)
         {  
             _unitOfWork = unitOfWork;
@@ -30,18 +30,14 @@ namespace MyWebAppProject.Controllers
         [HttpGet]
         public string AddToDataBase(string brand, string color, double price)
         {
+            var pen = _penBuilder
+                .Create()
+                .SetBrand(new Brand(brand))
+                .SetColor(color)
+                .SetPrice(price)
+                .Build();
 
-            var penBrand = new Brand()
-            {
-                Name = brand,
-            };
-            _unitOfWork.BrandRepository.Add(penBrand);
-           var pen = new Pen (){
-                Color = color,
-                Price = price,
-                Brand = penBrand,
-            };
-            
+            _unitOfWork.BrandRepository.Add(pen.Brand);
             _unitOfWork.PenRepository.Add(pen);
             _unitOfWork.Save();
 
@@ -52,7 +48,7 @@ namespace MyWebAppProject.Controllers
             var pen = _unitOfWork.PenRepository.GetById(id);
             var brandId = pen.BrandId;
             var brand = _unitOfWork.BrandRepository.GetById(brandId);
-            
+
             _unitOfWork.PenRepository.Delete(pen);
             _unitOfWork.BrandRepository.Delete(brand);
             _unitOfWork.Save();

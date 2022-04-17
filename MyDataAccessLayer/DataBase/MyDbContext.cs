@@ -12,6 +12,14 @@ namespace DataAccessLayer.DataBase
         {
            
         }
-        
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Pen>()
+                .HasOne<Brand>(s => s.Brand)
+                .WithMany(g => g.Pens)
+                .HasForeignKey(s => s.BrandId)
+                .OnDelete(DeleteBehavior.Cascade);
+        }
     }
 }
