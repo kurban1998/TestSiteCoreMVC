@@ -1,5 +1,6 @@
 ﻿using DataAccessLayer.DataBase;
 using DataAccessLayer.Interfaces;
+using DataAccessLayer.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
@@ -28,6 +29,11 @@ namespace DataAccessLayer.Repository
         public IQueryable<T> GetAll()
         {
             return _dbSet;
+        }
+
+        public T GetById(int id)
+        {
+            return _dbSet.Find(id);
         }
 
         private DbSet<T> _dbSet;

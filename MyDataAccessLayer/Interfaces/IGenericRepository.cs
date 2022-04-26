@@ -10,5 +10,6 @@ namespace DataAccessLayer.Interfaces
         IQueryable<T> GetAll();
         void Add(T item);
         void Delete(T item);
+        T GetById(int id);
     }
 }

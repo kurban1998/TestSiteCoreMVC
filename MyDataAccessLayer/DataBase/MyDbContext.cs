@@ -1,20 +1,25 @@
 ﻿using DataAccessLayer.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+using MyDataAccessLayer.Models;
 namespace DataAccessLayer.DataBase
 {
     public class MyDbContext : DbContext
     {
         public DbSet<Pen> Pens { get; set; }
+        public DbSet<Brand> Brands { get; set; }
         public MyDbContext(DbContextOptions<MyDbContext> options)
            : base(options)
         {
-            Database.EnsureCreated();
+           
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Pen>()
+                .HasOne<Brand>(s => s.Brand)
+                .WithMany(g => g.Pens)
+                .HasForeignKey(s => s.BrandId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
