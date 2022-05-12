@@ -1,50 +1,49 @@
-﻿@model MyDataAccessLayer.Models.GeneralModel 
-    @{
-        //ViewData["Title"] = "Список ручек";
-        Layout = null;
-    }
-    <!DOCTYPE html>
+﻿@model MyDataAccessLayer.Models.GeneralModel
+@{
+    //ViewData["Title"] = "Список ручек";
+    Layout = null;
+}
+<!DOCTYPE html>
 
-    <html>
-    <head>
-        <title>Магазин Ручек</title>
-    </head>
-    <body>
-        <h3>Ручки</h3>
-            
-                <table border="1" bordercolor="black" style="float:left">
-                    <tr>
-                        <td>id</td>
-                        <td>Цвет</td>
-                        <td>Цена</td>
-                    </tr>
-                    @foreach (var pen in Model.Pens)
-                    {
-                        <tr>
-                            <td>@pen.Id</td>
-                            <td>@pen.Color</td>
-                            <td>@pen.Price</td>
-                        </tr>
-                    }
-                </table>
-            
-                <table border="1" bordercolor="black" >
-                    <tr>
-                        <td>Бренд</td>
-                    </tr>
-                    @foreach (var brand in Model.Brands)
-                    {
-                        <tr>
-                            <td>@brand.Name</td>
-                        </tr>
-                    }
-                </table>
-           
-    </body>
+<html>
+<head>
+    <title>Магазин Ручек</title>
+</head>
+<body>
+    <h3>Ручки</h3>
+
+    <table border="1" bordercolor="black" style="float:left">
+        <tr>
+            <td>id</td>
+            <td>Цвет</td>
+            <td>Цена</td>
+        </tr>
+        @foreach (var pen in Model.Pens)
+        {
+            <tr>
+                <td>@pen.Id</td>
+                <td>@pen.Color</td>
+                <td>@pen.Price</td>
+            </tr>
+        }
+    </table>
+
+    <table border="1" bordercolor="black">
+        <tr>
+            <td>Бренд</td>
+        </tr>
+        @foreach (var brand in Model.Brands)
+        {
+            <tr>
+                <td>@brand.Name</td>
+            </tr>
+        }
+    </table>
+</body>
 </html>
 
 
-<form method="get" action="~/Home/AddToDataBase">
+<form method="post" action="~/Home/AddToDataBase">
     <label>Бренд</label><br />
     <input type="text" name="brand" /><br />
     <label>Цвет</label><br />
@@ -55,8 +54,22 @@
     <input type="submit" value="добавить в базу" />
 </form>
 <br />
-<form method="get" action="~/Home/DeleteFromDataBase">
-    <h3>id ручки</h3> <input type="number" name="id" /><br />
-    <br />
-    <input type="submit" value="Удалить ручку из базы" />
-</form>
+<p><button class="btn btn-primary" id="load">Удалить ручку из базы</button></p>
+<h3>id ручки</h3><input type="number" name="id" id="elem" />
+<br />
+<script>
+    document.getElementById('load').addEventListener('click', () => {
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                document.getElementById('elem').innerHTML = this.responseText;
+            }
+        }
+        var elem = document.getElementById("elem").value;
+        
+        xhr.open('DELETE', '/Home/DeleteFromDataBase/?id=' + elem);
+        console.log(`Элемент {id = ${elem}} удален.`);
+        xhr.send();
+    });
+</script>
+
