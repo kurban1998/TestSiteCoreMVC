@@ -55,7 +55,8 @@ button.accept-policy {
 -------------------------------------------------- */
 html {
   position: relative;
-  min-height: 100%;
+    min-height: 100%;
+    left: 30px;
 }
 
 body {
