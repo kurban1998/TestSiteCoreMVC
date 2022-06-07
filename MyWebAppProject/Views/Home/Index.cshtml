@@ -9,55 +9,59 @@
 <head>
     <title>Магазин Ручек</title>
     <link rel="stylesheet" href="/css/site.css"/>
+   
 </head>
 <body>
-    <h3>Ручки</h3>
+    <div class="mystyle">
+        <h3>Ручки</h3>
 
-    <table border="1" bordercolor="black" style="float:left">
-        <tr>
-            <td>id</td>
-            <td>Цвет</td>
-            <td>Цена</td>
-        </tr>
-        @foreach (var pen in Model.Pens)
-        {
+        <table border="1" bordercolor="black" style="float:left">
             <tr>
-                <td>@pen.Id</td>
-                <td>@pen.Color</td>
-                <td>@pen.Price</td>
+                <td>id</td>
+                <td>Цвет</td>
+                <td>Цена</td>
             </tr>
-        }
-    </table>
+            @foreach (var pen in Model.Pens)
+            {
+                <tr>
+                    <td>@pen.Id</td>
+                    <td>@pen.Color</td>
+                    <td>@pen.Price</td>
+                </tr>
+            }
+        </table>
 
-    <table border="1" bordercolor="black">
-        <tr>
-            <td>Бренд</td>
-        </tr>
-        @foreach (var brand in Model.Brands)
-        {
+        <table border="1" bordercolor="black">
             <tr>
-                <td>@brand.Name</td>
+                <td>Бренд</td>
             </tr>
-        }
-    </table>
+            @foreach (var brand in Model.Brands)
+            {
+                <tr>
+                    <td>@brand.Name</td>
+                </tr>
+            }
+        </table>
+    </div>
 </body>
 </html>
 
-
-<form method="post" action="~/Home/AddToDataBase">
-    <label>Бренд</label><br />
-    <input type="text" name="brand" /><br />
-    <label>Цвет</label><br />
-    <input type="text" name="color" /><br />
-    <label>Цена</label><br />
-    <input type="number" min="5" max="1000" name="price" /><br />
+<div class="mystyle">
+    <form method="post" action="~/Home/AddToDataBase">
+        <label>Бренд</label><br />
+        <input type="text" name="brand" /><br />
+        <label>Цвет</label><br />
+        <input type="text" name="color" /><br />
+        <label>Цена</label><br />
+        <input type="number" min="5" max="1000" name="price" /><br />
+        <br />
+        <input type="submit" class="btn btn-success" value="добавить в базу" />
+    </form>
     <br />
-    <input type="submit" class="btn btn-success" value="добавить в базу" />
-</form>
-<br />
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
- <p><button class="btn btn-danger" id="load">Удалить ручку из базы</button></p>
- <h3>id ручки</h3><input type="number" name="id" id="elem" />
- <br />
- <script src="/js/site.js"></script>
+    <p><button class="btn btn-danger" id="load">Удалить ручку из базы</button></p>
+    <h3>id ручки</h3><input type="number" name="id" id="elem" />
+    <br />
+    <script src="/js/site.js"></script>
+</div>
