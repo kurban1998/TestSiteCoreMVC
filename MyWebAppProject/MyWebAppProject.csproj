@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MyDataAccessLayer\MyDataAccessLayer.csproj" />
+    <ProjectReference Include="..\TodoApi\TodoApi.csproj" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="https://appsemble.app/api.json" /></VisualStudio></ProjectExtensions>
