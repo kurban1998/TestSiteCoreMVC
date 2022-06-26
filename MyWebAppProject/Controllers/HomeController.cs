@@ -12,7 +12,7 @@ namespace MyWebAppProject.Controllers
     {
         public PenBuilder _penBuilder = new PenBuilder();
         public HomeController(IUnitOfWork unitOfWork)
-        {  
+        {
             _unitOfWork = unitOfWork;
         }
 
@@ -23,11 +23,11 @@ namespace MyWebAppProject.Controllers
                 Pens = _unitOfWork.PenRepository.GetAll(),
                 Brands = _unitOfWork.BrandRepository.GetAll(),
             };
-             
+
             return View(gModel);
         }
-        
-        [HttpGet]
+
+        [HttpPost]
         public string AddToDataBase(string brand, string color, double price)
         {
             var pen = _penBuilder
@@ -43,8 +43,9 @@ namespace MyWebAppProject.Controllers
 
             return "Успешно добавлена";
         }
+        [HttpDelete]
         public string DeleteFromDataBase(int id)
-        {
+        { 
             var pen = _unitOfWork.PenRepository.GetById(id);
             var brandId = pen.BrandId;
             var brand = _unitOfWork.BrandRepository.GetById(brandId);
