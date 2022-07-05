@@ -23,11 +23,16 @@ namespace TodoApi.Controllers
 
         // GET: api/TodoItems
         [HttpGet]
-        public async Task<List<Pen>> GetTodoItems()
+        public  Task<List<Pen>> GetTodoPens()
         {
-            return await _unitOfWork.PenRepository.GetAll().ToListAsync();
+            return  _unitOfWork.PenRepository.GetAll().ToListAsync();
         }
-
+        // GET: api/TodoItems/brands
+        [HttpGet("brands")]
+        public  Task<List<Brand>> GetTodoBrands()
+        {
+            return  _unitOfWork.BrandRepository.GetAll().ToListAsync();
+        }
         // GET: api/TodoItems/5
         [HttpGet("{id}")]
         public Pen GetTodoItem(int id)
@@ -36,31 +41,19 @@ namespace TodoApi.Controllers
             return pen;
         }
 
-        // PUT: api/TodoItems/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public void PutTodoItem(int id, string brand, string color, double price)
-        {
-            var pen = _unitOfWork.PenRepository.GetById(id);
-            pen.Brand.Name = brand;
-            pen.Color = color;
-            pen.Price = price;
-        }
-
         // POST: api/TodoItems
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public void PostTodoItem(string brand, string color, double price)
+        public void PostTodoItem(Pen pen)
         {
-            var pen = _penBuilder
-                .Create()
-                .SetBrand(new Brand("AAA"))
-                .SetColor("red")
-                .SetPrice(100)
-                .Build();
-
-            _unitOfWork.BrandRepository.Add(pen.Brand);
-            _unitOfWork.PenRepository.Add(pen);
+            var newPen = _penBuilder
+               .Create()
+               .SetBrand(new Brand(pen.Brand.Name))
+               .SetColor(pen.Color)
+               .SetPrice(pen.Price)
+               .Build();
+            _unitOfWork.BrandRepository.Add(newPen.Brand);
+            _unitOfWork.PenRepository.Add(newPen);
             _unitOfWork.Save();
             //post -h Content-Type=application/json -c "{"brand":"AAA","color":"red","price":100}"
         }
@@ -77,13 +70,5 @@ namespace TodoApi.Controllers
             _unitOfWork.BrandRepository.Delete(brand);
             _unitOfWork.Save();
         }
-        private static PenDTO ItemToDTO(Pen pen) =>
-            new PenDTO
-            {
-                Id = pen.Id,
-                Price = pen.Price,
-                Color = pen.Color,
-                BrandId = pen.BrandId
-            };
     }
 }
