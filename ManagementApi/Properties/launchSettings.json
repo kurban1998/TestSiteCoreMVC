@@ -12,12 +12,12 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "api/todoitems",
+      "launchUrl": "api/ManagementApi",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "TodoApi": {
+    "ManagementApi": {
       "commandName": "Project",
       "dotnetRunMessages": "true",
       "launchBrowser": true,

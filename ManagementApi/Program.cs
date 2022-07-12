@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using MyDataAccessLayer.DataBase;
 using System;
 
-namespace TodoApi
+namespace ManagementApi
 {
     public class Program
     {

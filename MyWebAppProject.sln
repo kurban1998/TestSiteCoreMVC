@@ -7,9 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyWebAppProject", "MyWebApp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyDataAccessLayer", "MyDataAccessLayer\MyDataAccessLayer.csproj", "{3DB13072-11B9-4308-B527-0ECD2424BCDE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyWebAppProject.UnitTests", "MyWebAppProject.UnitTests\MyWebAppProject.UnitTests.csproj", "{591A4064-B16A-4E00-89CB-E9D9E66574D0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ManagementApi.UnitTests", "ManagementApi.UnitTests\ManagementApi.UnitTests.csproj", "{591A4064-B16A-4E00-89CB-E9D9E66574D0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoApi", "TodoApi\TodoApi.csproj", "{F27968FF-5CF3-41CC-9D56-DDD05B19EFFD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ManagementApi", "ManagementApi\ManagementApi.csproj", "{F27968FF-5CF3-41CC-9D56-DDD05B19EFFD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

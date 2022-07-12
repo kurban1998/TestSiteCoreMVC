@@ -4,36 +4,36 @@ using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using MyDataAccessLayer.Builder;
 using MyDataAccessLayer.Models;
-using TodoApi.Models;
+using MyDataAccessLayer.Interfaces;
 
-namespace TodoApi.Controllers
+namespace ManagementApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TodoItemsController : ControllerBase
+    public class ManagementApiController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
-        private PenBuilder _penBuilder = new PenBuilder();
-        public TodoItemsController(IUnitOfWork unitOfWork)
+        private readonly IPenBuilder _penBuilder;
+        public ManagementApiController(IUnitOfWork unitOfWork, IPenBuilder penBuilder)
         {
             _unitOfWork = unitOfWork;
+            _penBuilder = penBuilder;
         }
 
-        // GET: api/TodoItems
+        // GET: api/ManagementApi
         [HttpGet]
         public  Task<List<Pen>> GetTodoPens()
         {
             return  _unitOfWork.PenRepository.GetAll().ToListAsync();
         }
-        // GET: api/TodoItems/brands
+        // GET: api/ManagementApi/brands
         [HttpGet("brands")]
         public  Task<List<Brand>> GetTodoBrands()
         {
             return  _unitOfWork.BrandRepository.GetAll().ToListAsync();
         }
-        // GET: api/TodoItems/5
+        // GET: api/ManagementApi/5
         [HttpGet("{id}")]
         public Pen GetTodoItem(int id)
         {
@@ -41,7 +41,7 @@ namespace TodoApi.Controllers
             return pen;
         }
 
-        // POST: api/TodoItems
+        // POST: api/ManagementApi
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public void PostTodoItem(Pen pen)
@@ -55,10 +55,9 @@ namespace TodoApi.Controllers
             _unitOfWork.BrandRepository.Add(newPen.Brand);
             _unitOfWork.PenRepository.Add(newPen);
             _unitOfWork.Save();
-            //post -h Content-Type=application/json -c "{"brand":"AAA","color":"red","price":100}"
         }
 
-        // DELETE: api/TodoItems/5
+        // DELETE: api/ManagementApi/5
         [HttpDelete("{id}")]
         public void DeleteTodoItem(int id)
         {

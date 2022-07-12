@@ -1,21 +1,22 @@
 using AutoFixture;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
+using ManagementApi.Controllers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using MyDataAccessLayer.Interfaces;
 using MyDataAccessLayer.Models;
-using MyWebAppProject.Controllers;
 using System.Collections.Generic;
 using System.Linq;
-using TodoApi.Controllers;
 
-namespace MyWebAppProject.UnitTests
+namespace ManagementApi.UnitTests
 {
     [TestClass]
-    public class TodoItemsControllerTests
+    public class ManagementApiControllerTests
     {
         private Mock<IUnitOfWork> _unitOfWork;
-        private TodoItemsController _target;
+        private Mock<IPenBuilder> _penBuilder;
+        private ManagementApiController _target;
         private Mock<IGenericRepository<Pen>> _penRepository;
         private Mock<IGenericRepository<Brand>> _brandRepository;
         private readonly Fixture _fixture = new Fixture();
@@ -23,32 +24,43 @@ namespace MyWebAppProject.UnitTests
         public void TestInitialize() 
         {
             _unitOfWork = new Mock<IUnitOfWork>(MockBehavior.Strict);
-            _target = new TodoItemsController(_unitOfWork.Object);
+            _penBuilder = new Mock<IPenBuilder>(MockBehavior.Strict);
+            _target = new ManagementApiController(_unitOfWork.Object, _penBuilder.Object);
             _penRepository = new Mock<IGenericRepository<Pen>>(MockBehavior.Strict);
             _brandRepository = new Mock<IGenericRepository<Brand>>(MockBehavior.Strict);
             _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
         }
         [TestMethod]
-        public void TodoItemsController_PostTodoItem_Success()
+        public void ManagementApiController_PostTodoItem_Success()
         {
             // Arrange
             var pen = _fixture.Create<Pen>();
-            _unitOfWork.SetupGet(x=>x.PenRepository).Returns(_penRepository.Object);
+            _unitOfWork.SetupGet(x => x.PenRepository).Returns(_penRepository.Object);
             _unitOfWork.SetupGet(y => y.BrandRepository).Returns(_brandRepository.Object);
             _unitOfWork.Setup(x => x.PenRepository.Add(It.IsAny<Pen>()));
             _unitOfWork.Setup(y => y.BrandRepository.Add(It.IsAny<Brand>()));
             _unitOfWork.Setup(x => x.Save());
+            _penBuilder.Setup(z => z.Create()).Returns(_penBuilder.Object);
+            _penBuilder.Setup(z => z.SetBrand(It.IsAny<Brand>())).Returns(_penBuilder.Object);
+            _penBuilder.Setup(z => z.SetColor(It.IsAny<string>())).Returns(_penBuilder.Object);
+            _penBuilder.Setup(z => z.SetPrice(It.IsAny<double>())).Returns(_penBuilder.Object);
+            _penBuilder.Setup(z => z.Build()).Returns(pen);
             // Act
             _target.PostTodoItem(pen);
             // Assert
-            _unitOfWork.Verify(x => x.Save(),Times.Once);
-            _unitOfWork.Verify(x=>x.PenRepository.Add(It.IsAny<Pen>()));
+            _unitOfWork.Verify(x => x.Save(), Times.Once);
+            _unitOfWork.Verify(x => x.PenRepository.Add(It.IsAny<Pen>()));
             _unitOfWork.Verify(y => y.BrandRepository.Add(It.IsAny<Brand>()));
-            _unitOfWork.VerifyGet(x=>x.PenRepository,Times.Once);
+            _unitOfWork.VerifyGet(x => x.PenRepository, Times.Once);
             _unitOfWork.VerifyGet(y => y.BrandRepository, Times.Once);
+            _penBuilder.Verify(z => z.Create(), Times.Once);
+            _penBuilder.Verify(z => z.SetBrand(It.IsAny<Brand>()), Times.Once);
+            _penBuilder.Verify(z => z.SetColor(It.IsAny<string>()), Times.Once);
+            _penBuilder.Verify(z => z.SetPrice(It.IsAny<double>()), Times.Once);
+            _penBuilder.Verify(z => z.Build(), Times.Once);
         }
         [TestMethod]
-        public void TodoItemsController_GetTodoPens_Success()
+        public void ManagementApiController_GetTodoPens_Success()
         { 
             // Arrange
             var pens = _fixture.Create<List<Pen>>();
@@ -61,7 +73,7 @@ namespace MyWebAppProject.UnitTests
             _unitOfWork.Verify(x => x.PenRepository.GetAll(), Times.Once);
         }
         [TestMethod]
-        public void TodoItemsController_GetTodoBrands_Success()
+        public void ManagementApiController_GetTodoBrands_Success()
         {
             // Arrange
             var brands = _fixture.Create<List<Brand>>();
@@ -74,7 +86,7 @@ namespace MyWebAppProject.UnitTests
             _unitOfWork.Verify(x => x.BrandRepository.GetAll(), Times.Once);
         }
         [TestMethod]
-        public void TodoItemsController_GetTodoItem_Success()
+        public void ManagementApiController_GetTodoItem_Success()
         {
             // Arrange
             var penId = _fixture.Create<int>();
@@ -88,7 +100,7 @@ namespace MyWebAppProject.UnitTests
             _unitOfWork.Verify(x => x.PenRepository.GetById(penId), Times.Once);
         }
         [TestMethod]
-        public void TodoItemsController_DeleteTodoItem_Success()
+        public void ManagementApiController_DeleteTodoItem_Success()
         {
             // Arrange
             var penId = _fixture.Create<int>();

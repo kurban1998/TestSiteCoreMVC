@@ -4,7 +4,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
-using TodoApi.Models;
 using DataAccessLayer.DataBase;
 using MyDataAccessLayer.Builder;
 using MyDataAccessLayer.Interfaces;
@@ -13,7 +12,7 @@ using DataAccessLayer.Models;
 using DataAccessLayer.Repository;
 using MyDataAccessLayer.Models;
 
-namespace TodoApi
+namespace ManagementApi
 {
     public class Startup
     {

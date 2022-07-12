@@ -1,34 +1,37 @@
-﻿using DataAccessLayer.Interfaces;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using MyDataAccessLayer.Models;
 using MyWebAppProject.Models;
 using System.Diagnostics;
-using MyDataAccessLayer.Builder;
 using System.Threading.Tasks;
 using System.Net.Http;
-using System.Text.Json;
 using System.Collections.Generic;
 using DataAccessLayer.Models;
 using static System.Net.Mime.MediaTypeNames;
 using System.Text;
-using Nancy.Json;
+using MyDataAccessLayer.Interfaces;
+using ManagementApi;
+using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+using System.Security.Policy;
 
 namespace MyWebAppProject.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IUnitOfWork _unitOfWork;
         private readonly HttpClient _httpClient;
-        private PenBuilder _penBuilder = new PenBuilder();
-        public HomeController(IUnitOfWork unitOfWork, HttpClient httpclient)
+        private readonly IPenBuilder _penBuilder;
+        private readonly ManagementApiOptions _apiOptions;
+        public HomeController( HttpClient httpclient, IPenBuilder penBuilder,
+            IOptions<ManagementApiOptions> apiOptions)
         {
-            _unitOfWork = unitOfWork;
             _httpClient = httpclient;
+            _penBuilder = penBuilder;
+            _apiOptions = apiOptions.Value;
         }
         public async Task<IActionResult> Index()
         {
-            var urlForPens = $"https://localhost:44391/api/todoitems";
-            var urlForBrand = $"https://localhost:44391/api/todoitems/brands";
+            var urlForPens = _apiOptions.ManagementApiUrl;
+            var urlForBrand = _apiOptions.ManagementApiUrl.Insert(urlForPens.Length,"/brands");   
 
             var httpResponseMessage1 =
                 await _httpClient.GetStringAsync(urlForPens);
@@ -38,8 +41,8 @@ namespace MyWebAppProject.Controllers
             var jsonPens = httpResponseMessage1;
             var jsonBrands = httpResponseMessage2;
 
-            List<Pen> pens = new JavaScriptSerializer().Deserialize<List<Pen>>(jsonPens);
-            List<Brand> brands = new JavaScriptSerializer().Deserialize<List<Brand>>(jsonBrands);
+            List<Pen> pens = JsonConvert.DeserializeObject<List<Pen>>(jsonPens);
+            List<Brand> brands = JsonConvert.DeserializeObject<List<Brand>>(jsonBrands);
             var gModel = new GeneralModel()
             {
                 Pens = pens,
@@ -52,7 +55,7 @@ namespace MyWebAppProject.Controllers
         [HttpPost]
         public async Task AddToDataBase(string brand, string color, double price)
         {
-            var url = $"https://localhost:44391/api/todoitems";
+            var url = _apiOptions.ManagementApiUrl;
             var pen = _penBuilder
                .Create()
                .SetBrand(new Brand(brand))
@@ -61,7 +64,7 @@ namespace MyWebAppProject.Controllers
                .Build();
 
             var todoItemJson = new StringContent(
-              JsonSerializer.Serialize(pen),
+              JsonConvert.SerializeObject(pen),
               Encoding.UTF8,
               Application.Json);
 
@@ -73,9 +76,11 @@ namespace MyWebAppProject.Controllers
 
         public async Task DeleteFromDataBase(int id)
         {
+            var penId = $"/{id}";
+            var url = _apiOptions.ManagementApiUrl;
             using var httpResponseMessage =
-                await _httpClient.DeleteAsync($"https://localhost:44391/api/todoitems/{id}");
-
+                await _httpClient.DeleteAsync(url.Insert(url.Length,penId));
+            
             httpResponseMessage.EnsureSuccessStatusCode();
         }
 
