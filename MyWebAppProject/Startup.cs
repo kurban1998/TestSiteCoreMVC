@@ -27,7 +27,7 @@ namespace MyWebAppProject
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<ManagementApiOptions>(Configuration.GetSection(
-                ManagementApiOptions.UrlAddress));    
+                ManagementApiOptions.ManagementApi));    
             string connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<MyDbContext>(options => options.UseSqlServer(connection));
             services.AddTransient<IGenericRepository<Pen>,GenericRepository<Pen>>();

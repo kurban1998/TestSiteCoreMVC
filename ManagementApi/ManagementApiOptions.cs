@@ -6,7 +6,7 @@ namespace ManagementApi
 {
     public class ManagementApiOptions
     {
-        public const string UrlAddress = "UrlAddress"; 
-        public string ManagementApiUrl { get; set; } 
+        public const string ManagementApi = "ManagementApi"; 
+        public string BaseUrl { get; set; } 
     }
 }

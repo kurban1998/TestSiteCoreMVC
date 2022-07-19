@@ -28,18 +28,19 @@ namespace MyWebAppProject.Controllers
             _penBuilder = penBuilder;
             _apiOptions = apiOptions.Value;
         }
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var urlForPens = _apiOptions.ManagementApiUrl;
-            var urlForBrand = _apiOptions.ManagementApiUrl.Insert(urlForPens.Length,"/brands");   
+            var urlForPens = _apiOptions.BaseUrl;
+            var urlForBrand = _apiOptions.BaseUrl +"/brands";   
 
-            var httpResponseMessage1 =
+            var pensResponce =
                 await _httpClient.GetStringAsync(urlForPens);
-            var httpResponseMessage2 =
+            var brandsResponce =
                 await _httpClient.GetStringAsync(urlForBrand);
 
-            var jsonPens = httpResponseMessage1;
-            var jsonBrands = httpResponseMessage2;
+            var jsonPens = pensResponce;
+            var jsonBrands = brandsResponce;
 
             List<Pen> pens = JsonConvert.DeserializeObject<List<Pen>>(jsonPens);
             List<Brand> brands = JsonConvert.DeserializeObject<List<Brand>>(jsonBrands);
@@ -55,7 +56,7 @@ namespace MyWebAppProject.Controllers
         [HttpPost]
         public async Task AddToDataBase(string brand, string color, double price)
         {
-            var url = _apiOptions.ManagementApiUrl;
+            var url = _apiOptions.BaseUrl;
             var pen = _penBuilder
                .Create()
                .SetBrand(new Brand(brand))
@@ -77,9 +78,9 @@ namespace MyWebAppProject.Controllers
         public async Task DeleteFromDataBase(int id)
         {
             var penId = $"/{id}";
-            var url = _apiOptions.ManagementApiUrl;
+            var url = _apiOptions.BaseUrl;
             using var httpResponseMessage =
-                await _httpClient.DeleteAsync(url.Insert(url.Length,penId));
+                await _httpClient.DeleteAsync(url+penId);
             
             httpResponseMessage.EnsureSuccessStatusCode();
         }
