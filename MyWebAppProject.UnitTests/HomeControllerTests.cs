@@ -1,4 +1,4 @@
-﻿using AutoFixture;
+using AutoFixture;
 using DataAccessLayer.Models;
 using ManagementApi;
 using Microsoft.Extensions.Options;
@@ -28,7 +28,7 @@ namespace MyWebAppProject.UnitTests
         public void TestInitialize()
         {
             _apiOptions = new Mock<IOptions<ManagementApiOptions>>();
-            _apiOptions.SetupGet(x => x.Value).Returns(new ManagementApiOptions { BaseUrl = _fixture.Create<Uri>().AbsoluteUri});
+            _apiOptions.SetupGet(x => x.Value).Returns(new ManagementApiOptions { BaseUrl = _fixture.Create<Uri>().AbsoluteUri });
             _handler = new Mock<HttpMessageHandler>(MockBehavior.Strict);
             _httpClient = _handler.CreateClient();
             _penBuilder = new Mock<IPenBuilder>(MockBehavior.Strict);
@@ -66,7 +66,7 @@ namespace MyWebAppProject.UnitTests
             _penBuilder.Setup(z => z.SetPrice(It.IsAny<double>())).Returns(_penBuilder.Object);
             _penBuilder.Setup(z => z.Build()).Returns(pen);
             //Act
-            await _target.AddToDataBase(brand,color,price);
+            await _target.AddToDataBase(brand, color, price);
             //Assert
             _handler.VerifyRequest(HttpMethod.Post, $"{_apiOptions.Object.Value.BaseUrl}");
             _penBuilder.Verify(z => z.Create(), Times.Once);

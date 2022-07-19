@@ -34,16 +34,16 @@ namespace MyWebAppProject.Controllers
             var urlForPens = _apiOptions.BaseUrl;
             var urlForBrand = _apiOptions.BaseUrl +"/brands";   
 
-            var pensResponce =
+            var pensResponse =
                 await _httpClient.GetStringAsync(urlForPens);
-            var brandsResponce =
+            var brandsResponse =
                 await _httpClient.GetStringAsync(urlForBrand);
 
-            var jsonPens = pensResponce;
-            var jsonBrands = brandsResponce;
+            var jsonPens = pensResponse;
+            var jsonBrands = brandsResponse;
 
-            List<Pen> pens = JsonConvert.DeserializeObject<List<Pen>>(jsonPens);
-            List<Brand> brands = JsonConvert.DeserializeObject<List<Brand>>(jsonBrands);
+            var pens = JsonConvert.DeserializeObject<List<Pen>>(jsonPens);
+            var brands = JsonConvert.DeserializeObject<List<Brand>>(jsonBrands);
             var gModel = new GeneralModel()
             {
                 Pens = pens,
@@ -77,10 +77,9 @@ namespace MyWebAppProject.Controllers
 
         public async Task DeleteFromDataBase(int id)
         {
-            var penId = $"/{id}";
             var url = _apiOptions.BaseUrl;
             using var httpResponseMessage =
-                await _httpClient.DeleteAsync(url+penId);
+                await _httpClient.DeleteAsync($"{url}/{id}");
             
             httpResponseMessage.EnsureSuccessStatusCode();
         }
