@@ -6,9 +6,7 @@ using Microsoft.Extensions.Logging;
 using MyDataAccessLayer.DataBase;
 using System;
 
-
-
-namespace MyWebAppProject
+namespace ManagementApi
 {
     public class Program
     {

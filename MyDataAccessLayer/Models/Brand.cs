@@ -13,5 +13,9 @@ namespace MyDataAccessLayer.Models
         {
             Name = name;
         }
+        public Brand()
+        {
+            
+        }
     }
 }
