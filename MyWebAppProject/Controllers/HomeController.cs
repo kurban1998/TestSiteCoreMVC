@@ -1,59 +1,87 @@
-﻿using DataAccessLayer.Interfaces;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using MyDataAccessLayer.Models;
 using MyWebAppProject.Models;
 using System.Diagnostics;
-using MyDataAccessLayer.Builder;
-
+using System.Threading.Tasks;
+using System.Net.Http;
+using System.Collections.Generic;
+using DataAccessLayer.Models;
+using static System.Net.Mime.MediaTypeNames;
+using System.Text;
+using MyDataAccessLayer.Interfaces;
+using ManagementApi;
+using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+using System.Security.Policy;
 
 namespace MyWebAppProject.Controllers
 {
     public class HomeController : Controller
     {
-        public PenBuilder _penBuilder = new PenBuilder();
-        public HomeController(IUnitOfWork unitOfWork)
+        private readonly HttpClient _httpClient;
+        private readonly IPenBuilder _penBuilder;
+        private readonly ManagementApiOptions _apiOptions;
+        public HomeController( HttpClient httpclient, IPenBuilder penBuilder,
+            IOptions<ManagementApiOptions> apiOptions)
         {
-            _unitOfWork = unitOfWork;
+            _httpClient = httpclient;
+            _penBuilder = penBuilder;
+            _apiOptions = apiOptions.Value;
         }
-
-        public IActionResult Index()
+        [HttpGet]
+        public async Task<IActionResult> Index()
         {
+            var urlForPens = _apiOptions.BaseUrl;
+            var urlForBrand = _apiOptions.BaseUrl +"/brands";   
+
+            var pensResponse =
+                await _httpClient.GetStringAsync(urlForPens);
+            var brandsResponse =
+                await _httpClient.GetStringAsync(urlForBrand);
+
+            var jsonPens = pensResponse;
+            var jsonBrands = brandsResponse;
+
+            var pens = JsonConvert.DeserializeObject<List<Pen>>(jsonPens);
+            var brands = JsonConvert.DeserializeObject<List<Brand>>(jsonBrands);
             var gModel = new GeneralModel()
             {
-                Pens = _unitOfWork.PenRepository.GetAll(),
-                Brands = _unitOfWork.BrandRepository.GetAll(),
+                Pens = pens,
+                Brands = brands,
             };
 
             return View(gModel);
         }
 
         [HttpPost]
-        public string AddToDataBase(string brand, string color, double price)
+        public async Task AddToDataBase(string brand, string color, double price)
         {
+            var url = _apiOptions.BaseUrl;
             var pen = _penBuilder
-                .Create()
-                .SetBrand(new Brand(brand))
-                .SetColor(color)
-                .SetPrice(price)
-                .Build();
+               .Create()
+               .SetBrand(new Brand(brand))
+               .SetColor(color)
+               .SetPrice(price)
+               .Build();
 
-            _unitOfWork.BrandRepository.Add(pen.Brand);
-            _unitOfWork.PenRepository.Add(pen);
-            _unitOfWork.Save();
+            var todoItemJson = new StringContent(
+              JsonConvert.SerializeObject(pen),
+              Encoding.UTF8,
+              Application.Json);
 
-            return "Успешно добавлена";
+            using var httpResponseMessage =
+                await _httpClient.PostAsync(url, todoItemJson);
+
+            httpResponseMessage.EnsureSuccessStatusCode();
         }
-        [HttpDelete]
-        public string DeleteFromDataBase(int id)
-        { 
-            var pen = _unitOfWork.PenRepository.GetById(id);
-            var brandId = pen.BrandId;
-            var brand = _unitOfWork.BrandRepository.GetById(brandId);
 
-            _unitOfWork.PenRepository.Delete(pen);
-            _unitOfWork.BrandRepository.Delete(brand);
-            _unitOfWork.Save();
-            return "Ручка удалена из базы";
+        public async Task DeleteFromDataBase(int id)
+        {
+            var url = _apiOptions.BaseUrl;
+            using var httpResponseMessage =
+                await _httpClient.DeleteAsync($"{url}/{id}");
+            
+            httpResponseMessage.EnsureSuccessStatusCode();
         }
 
         public IActionResult Privacy()
@@ -67,6 +95,5 @@ namespace MyWebAppProject.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        private readonly IUnitOfWork _unitOfWork;
     }
 }
