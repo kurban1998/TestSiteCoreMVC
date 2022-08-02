@@ -12,7 +12,6 @@ using MyDataAccessLayer.Interfaces;
 using ManagementApi;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using System.Security.Policy;
 
 namespace MyWebAppProject.Controllers
 {
@@ -35,9 +34,9 @@ namespace MyWebAppProject.Controllers
             var urlForBrand = _apiOptions.BaseUrl +"/brands";   
 
             var pensResponse =
-                await _httpClient.GetStringAsync(urlForPens);
+                await _httpClient.GetStringAsync(urlForPens).ConfigureAwait(false);
             var brandsResponse =
-                await _httpClient.GetStringAsync(urlForBrand);
+                await _httpClient.GetStringAsync(urlForBrand).ConfigureAwait(false);
 
             var jsonPens = pensResponse;
             var jsonBrands = brandsResponse;
@@ -70,7 +69,7 @@ namespace MyWebAppProject.Controllers
               Application.Json);
 
             using var httpResponseMessage =
-                await _httpClient.PostAsync(url, todoItemJson);
+                await _httpClient.PostAsync(url, todoItemJson).ConfigureAwait(false);
 
             httpResponseMessage.EnsureSuccessStatusCode();
         }
@@ -79,7 +78,7 @@ namespace MyWebAppProject.Controllers
         {
             var url = _apiOptions.BaseUrl;
             using var httpResponseMessage =
-                await _httpClient.DeleteAsync($"{url}/{id}");
+                await _httpClient.DeleteAsync($"{url}/{id}").ConfigureAwait(false);
             
             httpResponseMessage.EnsureSuccessStatusCode();
         }

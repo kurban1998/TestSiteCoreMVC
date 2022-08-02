@@ -26,7 +26,6 @@ namespace ManagementApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddControllers();
             string connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<MyDbContext>(options => options.UseSqlServer(connection));
@@ -34,8 +33,7 @@ namespace ManagementApi
             services.AddTransient<IGenericRepository<Brand>, GenericRepository<Brand>>();
             services.AddTransient<IPenBuilder, PenBuilder>();
             services.AddTransient<IUnitOfWork, UnitOfWork>();
-            services.AddControllersWithViews();
-           
+            services.AddControllersWithViews();  
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
